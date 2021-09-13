@@ -5,21 +5,17 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>React! React! React!</title>
     <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
     <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    <title>Card Pallets</title>
     <!-- CSS only -->
     <style>
         *{
             margin: 0;
             padding: 0;
         }
-        #container{
-            margin: 0;
-            width: 100vw;
-            border: 1px solid black;
-        }
+
     </style>
 </head>
 
@@ -36,15 +32,16 @@
 
         const App = () => {
             const appStyle = {
+                width: "100%",
+                margin: "auto",
+                textAlign: "center",
                 border: "1px solid blue",
-                
-                justifyContent: "center",
             }
 
             var cards = [];
-            var numberOfCards = 100;
+            var numberOfCards = 60;
             for (var i=0; i<numberOfCards; i++){
-                cards.push(<CardContainer/>)
+                cards.push(<CardContainer key={i}/>)
             }
             return(
                 <div style={appStyle}>
@@ -57,7 +54,7 @@
         const CardContainer = () => {
             const containerStyle = {
                 display: "inline-block",
-                margin: 20,
+                margin: 30,
                 width: 250,
                 height: 350,
                 filter: "drop-shadow(0px 0px 5px #666)",
