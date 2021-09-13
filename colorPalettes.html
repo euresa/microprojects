@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React! React! React!</title>
+    <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    <!-- CSS only -->
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        #container{
+            margin: 0;
+            width: 100vw;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <div id='container'></div>
+    <script type='text/babel'>
+
+        const getRandomRGB = () =>{
+            var red = Math.floor(Math.random()*255);
+            var green = Math.floor(Math.random() * 255);
+            var blue = Math.floor(Math.random() * 255);
+            return [red, green, blue];
+        }
+
+        const App = () => {
+            const appStyle = {
+                border: "1px solid blue",
+                
+                justifyContent: "center",
+            }
+
+            var cards = [];
+            var numberOfCards = 100;
+            for (var i=0; i<numberOfCards; i++){
+                cards.push(<CardContainer/>)
+            }
+            return(
+                <div style={appStyle}>
+                    {cards}
+                </div>
+            )
+  
+        }
+
+        const CardContainer = () => {
+            const containerStyle = {
+                display: "inline-block",
+                margin: 20,
+                width: 250,
+                height: 350,
+                filter: "drop-shadow(0px 0px 5px #666)",
+            }
+            const [r, g, b] = getRandomRGB();
+            return(
+                <div style={containerStyle}>
+                    <CardColor red={r}  green={g} blue={b} />
+                    <CardInfo red={r} green={g} blue={b}/>
+                </div>
+            )
+        }
+
+        const CardColor = ({red,green,blue}) => {
+            const cardStyle = {
+                width: 250,
+                height: 250,
+                backgroundColor: `rgb(${red}, ${green}, ${blue})`
+            }
+            return <div style={cardStyle}></div>
+        }
+
+        const CardInfo = ({red, green, blue }) =>{
+
+            const infoStyle = {
+                position: "relative",
+                backgroundColor: "#FFF",
+                fontFamily: "sans-serif",
+                textAlign: "center",
+                width: 250,
+                height: 100,
+            }
+            const spanStyle= {
+                paddingTop: "40",
+            }
+            const label = `rgb(${red}, ${green}, ${blue})`;
+            return(
+                <div style={infoStyle}>
+                    <div style={spanStyle}>{label}</div>
+                </div>
+            )
+
+
+        }
+
+
+
+        ReactDOM.render(<App/>, document.getElementById("container"))
+    </script>
+</body>
+</html;
