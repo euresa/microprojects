@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
-    <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
     <title>React Practice</title>
     <!-- CSS only -->
@@ -15,6 +17,81 @@
             margin: 0;
             padding: 0;
         }
+
+.stickman {
+  width: 300px;
+  height: 300px;
+  display: block;
+  position: relative;
+}
+
+.head {
+  width: 50px;
+  height: 60px;
+  border: 5px solid black;
+  border-radius: 50%;
+  display: block;
+  position: relative;
+  top: 21px;
+  left: 133px;
+  z-index: 1;
+}
+
+.body {
+  width: 6px;
+  height: 100px;
+  border: 3px solid black;
+  display: block;
+  position: relative;
+  top: 20px;
+  left: 156px;
+}
+
+.leftleg {
+  width: 6px;
+  height: 100px;
+  border: 3px solid black;
+  display: block;
+  position: relative;
+  top: 0px;
+  left: 155px;
+  transform: rotate(12deg);
+  transform-origin: top;
+}
+
+.rightleg {
+  width: 6px;
+  height: 100px;
+  border: 3px solid black;
+  display: block;
+  position: relative;
+  top: -100px;
+  left: 157px;
+  transform: rotate(-12deg);
+  transform-origin: top;
+}
+
+.leftarm {
+  width: 50px;
+  height: 6px;
+  border: 3px solid black;
+  display: block;
+  position: relative;
+  top: -50px;
+  left: 110px;
+}
+
+.rightarm {
+  width: 50px;
+  height: 6px;
+  border: 3px solid black;
+  display: block;
+  position: relative;
+  top: -56px;
+  left: 161px;
+  animation: wave2 1s alternate infinite ease-in-out;
+  transform-origin: 0%;
+}
     </style>
 </head>
 
@@ -22,27 +99,123 @@
     <div id='container'></div>
     <script type='text/babel'>
 
+        const DisplayMan = ({ chosen }) => {
+            const divStyle = { width: "33%", height: 300, border: "1px solid black" }
+            const bodyParts = [
+                "stickman",
+                "head",
+                "body",
+                "leftarm",
+                "rightarm",
+                "leftleg",
+                "rightleg"
+            ];
 
-    const Wiggle = ({children}) => {
-        
-        return (
-            <div style={{padding:200}}>
-                {children}
-            </div>
-        )
-    }
+            return (
+                <div className="col-sm-5" style={divStyle}>
+                    <div className="stickman">
+                        <div className="head"></div>
+                        <div className="body"></div>
+                        <div className="leftarm"></div>
+                        <div className="rightarm"></div>
+                        <div className="leftleg"></div>
+                        <div className="rightleg"></div>
+                    </div>
+                </div>
+            )
+        }
 
-    const divStyle = {
-        backgroundColor: 'cornflowerblue',
-        width: 100,
-        height: 100,
-        borderRadius: "50%"
-    }
-    ReactDOM.render(
-        <Wiggle>
-            <div style={divStyle}></div>
-        </Wiggle>
-        , document.getElementById("container"))
+        const DisplayWord = ({ word, chosen }) => {
+            var letters = word.split("")
+            var wordsToShow = letters.map(l => chosen.indexOf(l)!= -1 ? l : "_" )
+            const divStyle = {
+                width:"67%", height: 300,
+                border: "1px solid black",
+                fontSize: '5rem',
+                padding:50,
+            }
+            return (
+                <div className="col-sm-7" style={divStyle}>
+                    {wordsToShow.map(letter => (
+                        <LetterOption
+                            key={`solution:${letter}`}
+                            letter={letter}/>)
+                    )}
+                </div>
+            )
+        }
+
+        const LetterOption = ({letter, handleOnClick}) => {
+            var color = handleOnClick ? "cornflowerblue" : 'purple'
+            const letterStyle = {
+                fontSize:"3rem",
+                display:'inline-block',
+                color: color,
+                width:50,
+                height:50,
+                margin: 5,
+                border: `1px solid ${color}`
+            }
+            return(
+                <div style={letterStyle}>
+                {handleOnClick && (
+                    <div>{letter}</div>
+                )}
+
+                {!handleOnClick && (
+                    <div>{letter}</div>
+                )}
+                </div>             
+            )
+        }
+
+        const DisplayChoices = ({ chosen, setChosen }) => {
+            const divStyle = {padding:30, height: 300, border: "1px solid black" }
+
+            var alphabetList = "qwertyuiopasdfghjklzxcvbnm".split("")
+            alphabetList = alphabetList.sort();
+            return (
+                <div className='col-lg-12' style={divStyle}>
+                    {alphabetList.map((letter) => (
+                         <LetterOption 
+                            handleOnClick = { setChosen }
+                            key = {`choice:${letter}`}
+                            letter={letter}/>)
+                        
+                    )}
+                </div>
+            )
+        }
+
+        const Hangman = () => {
+            const { useState } = React;
+            const word = 'pepper';
+            const [chosen, setChosen] = useState(['p'])
+
+            const hangmanStyle = {
+                backgroundColor:"white",
+                filter: "drop-shadow(0px 0px 5px #666)",
+                textAlign:"center", 
+                margin: 'auto',
+                marginTop: 50,
+                width: "80vw",
+                height: 600,
+            };
+
+            return (
+                <div className='container' style={hangmanStyle}>
+                    <div className='row'>
+                        <DisplayMan chosen={chosen} />
+                        <DisplayWord word={word} chosen={chosen} />
+                    </div>
+                    <div className="row">
+                        <DisplayChoices chosen={chosen} setChosen={setChosen} />
+                    </div>
+                </div>
+            )
+        }
+        ReactDOM.render(
+            <Hangman />, document.getElementById("container"))
     </script>
 </body>
 </html;
