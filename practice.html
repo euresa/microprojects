@@ -98,36 +98,36 @@
 <body>
     <div id='container'></div>
     <script type='text/babel'>
-
-        const DisplayMan = ({ chosen }) => {
+        const { useState, useEffect } = React;
+        const DisplayMan = (strikes) => {
             const divStyle = { width: "33%", height: 300, border: "1px solid black" }
-            const bodyParts = [
-                "stickman",
+            const allBodyParts = [
                 "head",
                 "body",
                 "leftarm",
                 "rightarm",
                 "leftleg",
                 "rightleg"
-            ];
+            ]
+            const [bodyParts, setBodyParts] = useState(allBodyParts)
+            useEffect(()=> {
+                var newBodyParts = allBodyParts.splice(0,strikes)
+                setBodyParts(newBodyParts)
+            },[strikes])
+            console.log(`Loggin: ${bodyParts}`)
 
             return (
                 <div className="col-sm-5" style={divStyle}>
+                    {console.log(bodyParts)}
                     <div className="stickman">
-                        <div className="head"></div>
-                        <div className="body"></div>
-                        <div className="leftarm"></div>
-                        <div className="rightarm"></div>
-                        <div className="leftleg"></div>
-                        <div className="rightleg"></div>
+                    {bodyParts.map(part => (<div className={part}></div>))}
                     </div>
                 </div>
             )
         }
 
-        const DisplayWord = ({ word, chosen }) => {
-            var letters = word.split("")
-            var wordsToShow = letters.map(l => chosen.indexOf(l)!= -1 ? l : "_" )
+        const DisplayWord = ({ lettersToShow, chosen }) => {
+
             const divStyle = {
                 width:"67%", height: 300,
                 border: "1px solid black",
@@ -136,17 +136,17 @@
             }
             return (
                 <div className="col-sm-7" style={divStyle}>
-                    {wordsToShow.map(letter => (
+                    {lettersToShow.map(letter => (
                         <LetterOption
-                            key={`solution:${letter}`}
+                            chosen = {chosen}
                             letter={letter}/>)
                     )}
                 </div>
             )
         }
 
-        const LetterOption = ({letter, handleOnClick}) => {
-            var color = handleOnClick ? "cornflowerblue" : 'purple'
+        const LetterOption = ({word, letter, chosen, setChosen, ...rest}) => {
+            var color = setChosen ? "cornflowerblue" : 'purple'
             const letterStyle = {
                 fontSize:"3rem",
                 display:'inline-block',
@@ -156,41 +156,73 @@
                 margin: 5,
                 border: `1px solid ${color}`
             }
-            return(
-                <div style={letterStyle}>
-                {handleOnClick && (
-                    <div>{letter}</div>
-                )}
+            
+            const handleLetterChoice = (e) => {
+                e.preventDefault()
+                var newChosen = chosen.filter(l => true);
+                newChosen.push(letter)
+                setChosen(newChosen)
+                if (word.indexOf(letter)===-1){
+                    var newStrikes = rest.strikes + 1
+                    rest.setStrikes(newStrikes)
+                }
+            }   
 
-                {!handleOnClick && (
-                    <div>{letter}</div>
-                )}
-                </div>             
+            return(
+                <div style={letterStyle} >
+                    {setChosen && (
+                        <div onClick={handleLetterChoice}>
+                            {letter}
+                        </div>
+                    )}
+                    {!setChosen && (
+                        <div >
+                            {letter}
+                        </div>
+                    )}  
+                </div>        
             )
         }
 
-        const DisplayChoices = ({ chosen, setChosen }) => {
+        const DisplayChoices = ({ word, chosen, setChosen, strikes, setStrikes }) => {
             const divStyle = {padding:30, height: 300, border: "1px solid black" }
-
             var alphabetList = "qwertyuiopasdfghjklzxcvbnm".split("")
-            alphabetList = alphabetList.sort();
+            alphabetList = alphabetList
+                            .sort()
+                            .filter((l) => !chosen.includes(l));
             return (
                 <div className='col-lg-12' style={divStyle}>
                     {alphabetList.map((letter) => (
                          <LetterOption 
-                            handleOnClick = { setChosen }
-                            key = {`choice:${letter}`}
+                            word={word}
+                            strikes = {strikes}
+                            setStrikes = {setStrikes}
+                            chosen = {chosen}
+                            setChosen = { setChosen }
                             letter={letter}/>)
-                        
                     )}
                 </div>
             )
         }
 
         const Hangman = () => {
-            const { useState } = React;
             const word = 'pepper';
-            const [chosen, setChosen] = useState(['p'])
+            const [chosen, setChosen] = useState([word[1]])
+            const [strikes, setStrikes] = useState(0)
+            var letters = word.split("")
+            var baseLetters = [];
+            for (var l of letters) {
+                baseLetters.push(chosen.includes(l) ? l : "_");
+            }
+            const [lettersToShow, setLettersToShow] = useState(baseLetters)
+
+            useEffect(()=>{
+                var baseLetters = [];
+                for (var l of letters) {
+                    baseLetters.push(chosen.includes(l) ? l : "_");
+                }
+                setLettersToShow(baseLetters)
+            }, [chosen])
 
             const hangmanStyle = {
                 backgroundColor:"white",
@@ -205,11 +237,16 @@
             return (
                 <div className='container' style={hangmanStyle}>
                     <div className='row'>
-                        <DisplayMan chosen={chosen} />
-                        <DisplayWord word={word} chosen={chosen} />
+                        <DisplayMan strikes = {strikes}/>
+                        <DisplayWord lettersToShow={lettersToShow} setLettersToShow={setLettersToShow} chosen={chosen} />
                     </div>
                     <div className="row">
-                        <DisplayChoices chosen={chosen} setChosen={setChosen} />
+                        <DisplayChoices
+                            word={word}
+                            strikes={strikes}
+                            setStrikes={setStrikes} 
+                            chosen={chosen} 
+                            setChosen={setChosen} />
                     </div>
                 </div>
             )
