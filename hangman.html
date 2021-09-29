@@ -99,9 +99,12 @@
     <div id='container'></div>
     <script type='text/babel'>
         const { useState, useEffect } = React;
-        const DisplayMan = (strikes) => {
+
+        
+        const DisplayMan = ({strikes, resetGame}) => {
             const divStyle = { width: "33%", height: 300, border: "1px solid black" }
-            const allBodyParts = [
+                        
+            const bodyParts = [
                 "head",
                 "body",
                 "leftarm",
@@ -109,30 +112,36 @@
                 "leftleg",
                 "rightleg"
             ]
-            const [bodyParts, setBodyParts] = useState(allBodyParts)
-            useEffect(()=> {
-                var newBodyParts = allBodyParts.splice(0,strikes)
-                setBodyParts(newBodyParts)
-            },[strikes])
-            console.log(`Loggin: ${bodyParts}`)
+
+
+            var bodyPartsToShow = [];
+            for (var i = 0; i < strikes; i++) {
+                bodyPartsToShow.push(bodyParts[i])
+            }
+            if (strikes === bodyParts.length) {
+                resetGame('loss');
+            }
 
             return (
                 <div className="col-sm-5" style={divStyle}>
-                    {console.log(bodyParts)}
                     <div className="stickman">
-                    {bodyParts.map(part => (<div className={part}></div>))}
+                        {bodyPartsToShow.map(part=> <div className={part}></div>)}
                     </div>
                 </div>
             )
         }
+        
 
-        const DisplayWord = ({ lettersToShow, chosen }) => {
+        const DisplayWord = ({ lettersToShow, chosen, resetGame }) => {
 
             const divStyle = {
                 width:"67%", height: 300,
                 border: "1px solid black",
                 fontSize: '5rem',
                 padding:50,
+            }
+            if (!lettersToShow.includes("_")){
+                resetGame("win")
             }
             return (
                 <div className="col-sm-7" style={divStyle}>
@@ -166,6 +175,7 @@
                     var newStrikes = rest.strikes + 1
                     rest.setStrikes(newStrikes)
                 }
+                
             }   
 
             return(
@@ -215,7 +225,6 @@
                 baseLetters.push(chosen.includes(l) ? l : "_");
             }
             const [lettersToShow, setLettersToShow] = useState(baseLetters)
-
             useEffect(()=>{
                 var baseLetters = [];
                 for (var l of letters) {
@@ -234,11 +243,17 @@
                 height: 600,
             };
 
+            const resetGame = (status) => {
+                status==='win'? alert("Congratulations!") : alert('Sorry, but you lose')
+            }
+
             return (
                 <div className='container' style={hangmanStyle}>
                     <div className='row'>
-                        <DisplayMan strikes = {strikes}/>
-                        <DisplayWord lettersToShow={lettersToShow} setLettersToShow={setLettersToShow} chosen={chosen} />
+                        
+                        <DisplayMan strikes={strikes} resetGame={resetGame}/>
+                        
+                        <DisplayWord lettersToShow={lettersToShow} setLettersToShow={setLettersToShow} chosen={chosen} resetGame={resetGame} />
                     </div>
                     <div className="row">
                         <DisplayChoices
