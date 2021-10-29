@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
+    <title>React Practice</title>
+    <!-- CSS only -->
+</head>
+<style>
+    h1{
+        text-align: center;
+    }
+</style>
+<body>
+
+    <div id='root'></div>
+    
+
+    <script type="text/babel">
+    const {useEffect} = React;
+
+        const MapBox = ({title, target, lat, long}) => {
+            const mapStyle = {
+                height: "300px",
+                width: "500px",
+                margin: "auto"
+            }
+            
+            const publicToken = "pk.eyJ1Ijoic2ZlMiIsImEiOiJja3ZjdTh6bzJiMjIwMnZuemQyNGl2dWpzIn0.hwE8rvD0j-kDKK8-XHxKLg"
+            mapboxgl.accessToken = publicToken;
+            useEffect(()=>{
+                const map = new mapboxgl.Map({
+                    container: target, // container ID
+                    style: 'mapbox://styles/mapbox/streets-v11', // style URL
+                    center: [lat, long], // starting position [lng, lat]
+                    zoom: 9 // starting zoom
+                });
+            },[])
+
+            return(
+                <div>
+                    <h1>{title}</h1>
+                    <div id={target} style={mapStyle}></div>
+                </div>
+            )
+        }
+        ReactDOM.render(
+            <div>
+                <MapBox title="New Mapbox Map!" target="map" lat={-74} long={50}/>
+                <MapBox title="Another Map" target="newMap" lat={60} long={60} />
+            </div>, document.getElementById('root'))
+    
+    
+    </script>
+</body>
+</html>

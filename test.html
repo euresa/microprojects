@@ -1,71 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
-    <title>React Practice</title>
-    <!-- CSS only -->
+    <title>Eloquent Javascript</title>
     <style>
         * {
-            margin: 0;
-            padding: 0;
+            margin:0;
+            padding:0;
         }
     </style>
 </head>
-
 <body>
-    <div id='container'></div>
-    <script type='text/babel'>
+    <div id='root'></div>
+    
+    <script>
+        var root = document.getElementById('root')
+        root.innerHTML = 'pickles. '
 
-        const DisplayMan = ({ word, chosen }) => {
-            const divStyle = { width: 200, height: 600, border: "1px solid black" }
-            return (
-                <div style={divStyle}>
-                    display man
-                </div>
-            )
-        }
-
-        const DisplayWord = ({ word, chosen }) => {
-            const divStyle = { width: 600, height: 600, border: "1px solid black" }
-            return (
-                <div style={divStyle}>
-                    display word
-                </div>
-            )
-        }
-
-        const DisplayChoices = ({ chosen, setChosen }) => {
-            const divStyle = { width: 800, height: 500, border: "1px solid black" }
-            return (
-                <div style={divStyle}>
-                    displaychoices
-                </div>
-            )
-        }
-
-
-
-        const Hangman = () => {
-            const { useState } = React;
-            const word = 'pickles';
-            const [chosen, setChosen] = useState([])
-
-            return (
-                <>
-                    <DisplayMan word={word} chosen={chosen} />
-                    <DisplayWord word={word} chosen={chosen} />
-                    <DisplayChoices chosen={chosen} setChosen={setChosen} />
-                </>
-            )
-        }
-        ReactDOM.render(
-            <Hangman />, document.getElementById("container"))
     </script>
 </body>
-</html;
+</html>
