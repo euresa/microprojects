@@ -13,6 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js'></script>
     <title>React Practice</title>
     <!-- CSS only -->
 </head>
@@ -24,43 +25,50 @@
 <body>
 
     <div id='root'></div>
-    
-
     <script type="text/babel">
-    const {useEffect} = React;
+    const {useEffect, useState} = React;
 
-        const MapBox = ({title, target, lat, long}) => {
-            const mapStyle = {
-                height: "300px",
-                width: "500px",
-                margin: "auto"
-            }
-            
-            const publicToken = "pk.eyJ1Ijoic2ZlMiIsImEiOiJja3ZjdTh6bzJiMjIwMnZuemQyNGl2dWpzIn0.hwE8rvD0j-kDKK8-XHxKLg"
-            mapboxgl.accessToken = publicToken;
-            useEffect(()=>{
-                const map = new mapboxgl.Map({
-                    container: target, // container ID
-                    style: 'mapbox://styles/mapbox/streets-v11', // style URL
-                    center: [lat, long], // starting position [lng, lat]
-                    zoom: 9 // starting zoom
-                });
-            },[])
-
-            return(
-                <div>
-                    <h1>{title}</h1>
-                    <div id={target} style={mapStyle}></div>
-                </div>
-            )
+    const MapBox = ({title, target, lat, long}) => {
+        const [newLat, setNewLat] = useState(lat)
+        const [newLong, setNewLong] = useState(long)
+        const mapStyle = {
+            height: "300px",
+            width: "500px",
+            margin: "auto" 
         }
-        ReactDOM.render(
-            <div>
-                <MapBox title="New Mapbox Map!" target="map" lat={-74} long={50}/>
-                <MapBox title="Another Map" target="newMap" lat={60} long={60} />
-            </div>, document.getElementById('root'))
-    
-    
+        
+        const publicToken = "pk.eyJ1Ijoic2ZlMiIsImEiOiJja3ZjdTh6bzJiMjIwMnZuemQyNGl2dWpzIn0.hwE8rvD0j-kDKK8-XHxKLg"
+        mapboxgl.accessToken = publicToken;
+        useEffect(()=>{
+            console.log("setting position")
+            const map = new mapboxgl.Map({
+                container: target, // container ID
+                style: 'mapbox://styles/mapbox/streets-v11', // style URL
+                center: [newLong, newLat], // starting position [lng, lat]
+                zoom: 9 // starting zoom
+            });
+        },[newLong, newLat])
+        const changeLocation = (e, x, y) => {
+            e.preventDefault()
+            setNewLat(x)
+            setNewLong(y)
+            console.log(`lat: ${x}, long: ${y}`)
+        }
+        return(
+            <div style={{textAlign:"center"}}>
+                <h1>{title}</h1>
+                <button type='button' className='btn btn-primary m4' onClick={() => confetti()}>Confetti</button>
+                <button type='button' className='btn btn-primary m4' onClick={(e) => changeLocation(e, 51.5072, -0.12)}>London</button>
+                <div id={target} style={mapStyle}></div>
+            </div>
+        )
+    }
+    ReactDOM.render(
+        <div>
+            <MapBox title="New Mapbox Map!" target="map" lat={51.5072} long={-.12}/>
+            <MapBox title="Another Map" target="newMap" lat={60} long={60} />
+        </div>, document.getElementById('root'))
+
     </script>
 </body>
 </html>
