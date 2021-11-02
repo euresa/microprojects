@@ -13,8 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
-    <script src='https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js'></script>
-    <title>React Practice</title>
+    <title>MapBox</title>
     <!-- CSS only -->
 </head>
 <style>
@@ -57,7 +56,6 @@
         return(
             <div style={{textAlign:"center"}}>
                 <h1>{title}</h1>
-                <button type='button' className='btn btn-primary m4' onClick={() => confetti()}>Confetti</button>
                 <button type='button' className='btn btn-primary m4' onClick={(e) => changeLocation(e, 51.5072, -0.12)}>London</button>
                 <div id={target} style={mapStyle}></div>
             </div>
